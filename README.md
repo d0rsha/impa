@@ -1,2 +1,2 @@
-# impa
-Solutions to UVA-judge
+# Kattis solutions 
+My kattis solutions 
