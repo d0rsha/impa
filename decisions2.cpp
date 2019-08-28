@@ -22,12 +22,12 @@ int step(int start, int end, int &nodes) {
     }
     else 
     {
-        return left | right;
+        return -1;
     }
 }
 
 int main() {
-    int n;
+    int n, nodes;
 
     printf("(1<<0) == %d , (1<<1) == %d\n", (1<<0), (1<<1));
 
@@ -39,7 +39,8 @@ int main() {
     }
 
 
-    
-    printf("%d\n", step(0, (1<<n)-1, n));
+    nodes = (1<<n) - 1;
+    step(0, (1<<n)-1, nodes);
+    printf("%d\n", nodes );
     return 0;
 }
