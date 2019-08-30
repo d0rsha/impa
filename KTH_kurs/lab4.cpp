@@ -29,72 +29,48 @@ string find_and_remove(vector<string> & input, string target)
                 return tmp;
             }
     }
-    throw runtime_error("Target not among input @find_and_remove(...) in lab4.cpp");
+    throw runtime_error("Target not among input @find_and_remove(...) in lab4.cpp: " + target );
 }
 
-
-int main()
+int breadth_first_search(vector<string> input, string start, string end, const int w_size )
 {
-    ifstream fin("KTH_kurs/word3.txt");
-    vector<string> input;
-    vector<vector<string>> bfs_queue;
-
-    const string start = "s3t", end = "sur";
-    const int input_size = 3;
-
-    int index = 0;
     int iterations = 0;  
-    {
-        string line;
-        bool first_word_among_input = false;
-        while (getline(fin, line) )
-        {
-            input.push_back(line);
-
-            if (line == start)
-            {
-                first_word_among_input = true;
-            }
-        }
-
-        if (!first_word_among_input) throw runtime_error("First word not among input");
-    }
-
+    vector<vector<string>> bfs_queue;
 
     bfs_queue.push_back(vector<string>());
     bfs_queue.at(0).push_back( find_and_remove(input, start) );
      
 
-    while (!false)
+    while (!bfs_queue.at(iterations).empty())
     {
         bfs_queue.push_back(vector<string>());
         
         while(!bfs_queue.at(iterations).empty())
         {
             string candidate = bfs_queue.at(iterations).front();
-            cout << "Next candidate: '" << candidate << "' From chain: " << endl;
+            // cout << "Next candidate: '" << candidate << "' From chain: " << endl;
             bfs_queue.at(iterations).erase(bfs_queue.at(iterations).begin());
 
             for (int i= 0; i < input.size(); i++)
             {
-                if (end.substr(0, input_size) == candidate.substr(0, input_size))
+                if (end.substr(0, w_size) == candidate.substr(0, w_size))
                 {// We´re done
                     cout << "bfs_queue[" << iterations << "].front() == " << candidate << endl;
-                    goto END_LOOP; 
+                    return iterations; 
                 }
                 else
                 {
-                    for (int skip = 0; skip < 3; skip++)
+                    for (int skip = 0; skip < w_size; skip++)
                     {
-                        int index = (skip + 0) % 3;
+                        int index = (skip + 0) % w_size;
                         if ( candidate[index] == input[i][index] )
                         {
-                            index = (skip + 1) % 3;
+                            index = (skip + 1) % w_size;
                             if (candidate[index] == input[i][index] )
                             {   // Matched!
                                 string char_swap = "";
-                                for ( int j = 0; j < 3; j++)
-                                    char_swap += ((j == (skip+2) % 3) ? '?' : candidate[j]);
+                                for ( int j = 0; j < w_size; j++)
+                                    char_swap += ((j == (skip+2) % w_size) ? '?' : candidate[j]);
                                 // cout << "Iteration[" << iterations << "] " << char_swap << " -> " << input[i] << endl;
 
                                 // Push_back match and remove item from list (shortest path to specific word)
@@ -105,12 +81,28 @@ int main()
                 }       
             }
         }
-        
+
         iterations++;
     }
 
-END_LOOP:
+    return -1;
+}
 
-    cout << iterations << endl;
+
+int main()
+{
+    ifstream fin("KTH_kurs/word3.txt");
+    vector<string> input;
+
+    {
+        string line;
+        while (getline(fin, line) )
+        {
+            input.push_back(line);
+        }
+    }
+
+
+    cout << breadth_first_search(input, "s3t", "sur", 3) << endl;
     return 0;
 }
