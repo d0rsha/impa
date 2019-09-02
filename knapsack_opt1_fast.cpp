@@ -4,13 +4,13 @@
 #include <fstream>
 #include <vector>
 
-#define ROWS 2
+#define ROWS 10
 
 using namespace std;
 
 int max(int a, int b) { return (a > b)? a : b; } 
 
-int knapSack(int W, int wt[], int val[], int n) 
+vector<int> knapSack(int W, int wt[], int val[], int n) 
 { 
 int i, w; 
 int K[ROWS][W+1]; 
@@ -39,10 +39,17 @@ for (i = 0; i <= n; i++)
  		}
 		else
 		{
-			K[i%ROWS][w] = K[(i-1)%ROWS][w]; 
+			K[i%ROWS][w] = K[(i-1)%ROWS][w];
+			list[i%ROWS][w] = list[(i-1)%ROWS][w];
 
 		}
 	}
+	for (w = 0; w <= W; w++) 
+	{
+		cout << K[i%ROWS][w] << " ";
+	}
+	cout << endl;
+
 	curr = i%ROWS; 
 }
 
@@ -55,13 +62,13 @@ for (i = 0; i < ROWS; i++)
 	cout << endl;
 } // Kolla föregående fall 
 
-return K[n][W]; 
+return list[curr][W]; 
 } 
 
 int main() 
 { 
-	int val[2000]; 
-	int wt[2000];
+	int val[200]; 
+	int wt[200];
 
 	int W; 
 	int n; 
@@ -75,9 +82,15 @@ int main()
         }
 
         // Variables initialized;
-	    cout << knapSack(W, wt, val, n) << endl; 
+		vector<int> res = knapSack(W, wt, val, n);
+		cout << res.size() << endl;
+	    for (auto x : res )
+		{
+			cout << x << " ";
+		}
+		cout << endl;
 
     }
 
 	return 0; 
-} 
+}
