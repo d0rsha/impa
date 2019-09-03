@@ -1,95 +1,101 @@
 // A Dynamic Programming based solution for 0-1 Knapsack problem 
-#include<stdio.h> 
 #include <iostream>
 #include <fstream>
 #include <vector>
 
-#define ROWS 10
+//#define DEBUG_BUILD DEBUG_BUILD_DEFINED 
 
 using namespace std;
 
-int max(int a, int b) { return (a > b)? a : b; } 
+int matrix[2000][2000];
+int cost[2000]; 
+int weight[2000];
 
-vector<int> knapSack(int W, int wt[], int val[], int n) 
+vector<int> calc_knapsack_without_repitions (int W, int n) 
 { 
-int i, w; 
-int K[ROWS][W+1]; 
-vector<int> list[ROWS][W];
-int curr;
+	int i, w; 
+	 
 
-for (i = 0; i <= n; i++) 
-{ 
-	for (w = 0; w <= W; w++) 
+	// Create matrix
+	for (i = 0; i <= n; i++) 
 	{ 
-		if (i==0 || w==0) 
-			K[i%ROWS][w] = 0; 
-		else if (wt[(i-1)] <= w) 
-		{
-			if (val[(i-1)] + K[(i-1)%ROWS][(w-wt[(i-1)])] > K[(i-1)%ROWS][w] )
-			{
-				K[i%ROWS][w] = val[(i-1)] + K[(i-1)%ROWS][(w-wt[(i-1)])];
-				list[i%ROWS][w] = list[(i-1)%ROWS][(w-wt[(i-1)])];
-				list[i%ROWS][w].push_back(i-1);
+		for (w = 0; w <= W; w++) 
+		{ 
+			if (i == 0 || w == 0) 
+			{ // Start case
+				matrix[i][w] = 0; 
 			}
-			else // if ( K[(i-1)%ROWS][w] is bigger )
-			{
-				K[i%ROWS][w] = K[(i-1)%ROWS][w];
-				list[i%ROWS][w] = list[(i-1)%ROWS][w];
-			}
- 		}
-		else
-		{
-			K[i%ROWS][w] = K[(i-1)%ROWS][w];
-			list[i%ROWS][w] = list[(i-1)%ROWS][w];
-
+			else if (weight[(i-1)] <= w) 
+			{ // Check if worth to add new item OR keep current sack 
+				matrix[i][w] = max(cost[i - 1] + matrix[i - 1][w-weight[i - 1]], 
+									matrix[i - 1][w]); 
+			}	
+			else
+			{	// Do not add item 
+				matrix[i][w] = matrix[i-1][w]; 
+			}			
 		}
 	}
-	for (w = 0; w <= W; w++) 
+
+	// Backtrace matrix
+	int sack_value = matrix[n][W];
+	vector<int> v;
+
+#ifdef DEBUG_BUILD
+	for (i = 0; i <= n; i++)
 	{
-		cout << K[i%ROWS][w] << " ";
+		for (w = 0; w <= W; w++)
+		{
+				cout << matrix[i][w] << " ";
+		}
+		cout << endl;
 	}
-	cout << endl;
+	cout << "Result: " << sack_value << endl;
+#endif
 
-	curr = i%ROWS; 
-}
+	w = W; 
+	for (i = n; i > 0 && sack_value > 0; i--) { 
 
-for (i = 0; i < ROWS; i++) 
-{ 
-	for (w = 0; w <= W; w++) 
-	{
-		cout << K[i][w] << " ";
+		if (sack_value == matrix[i - 1][w])  
+		{	// No new item was added in this row
+			continue;
+		}
+		else { // new item was added this row
+			v.push_back(i - 1);
+			
+			
+			sack_value = sack_value - cost[i - 1]; 
+			w = w - weight[i - 1]; 
+		} 
 	}
-	cout << endl;
-} // Kolla föregående fall 
 
-return list[curr][W]; 
+	return v; 
 } 
 
 int main() 
 { 
-	int val[200]; 
-	int wt[200];
-
 	int W; 
 	int n; 
-
+#ifdef DEBUG_BUILD
 	ifstream fin("knapsack.txt");
-	while (fin >> W >> n)
+	#define cin fin
+#endif
+ 	while (cin >> W >> n)
     {
         for (int i = 0; i < n; i++)
         {
-            fin >> val[i] >> wt[i];
+            cin >> cost[i] >> weight[i];
         }
 
         // Variables initialized;
-		vector<int> res = knapSack(W, wt, val, n);
+		vector<int> res = calc_knapsack_without_repitions(W, n);
 		cout << res.size() << endl;
 	    for (auto x : res )
 		{
-			cout << x << " ";
-		}
-		cout << endl;
+			cout <<  x << " "; 
 
+ 		}
+		cout << endl;
     }
 
 	return 0; 
