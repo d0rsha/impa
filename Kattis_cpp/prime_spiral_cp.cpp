@@ -40,40 +40,48 @@ int main() {
     to_num[{x,y}] = 1;
     to_coord[1] = {x,y};
 
-    int curr = 2;
-    int steps = 1;
-    while(curr <= 10000) {
-        for(int i = 0; i < 4 && curr <= 10000; i++) {
-            for(int j = 0; j < steps && curr <= 10000; j++) {
-                switch(i) {
-                    case 0: y++; break;
-                    case 1: x--; break;
-                    case 2: y--; break;
-                    case 3: x++; break;
-                }
+    {
+        int dir = 0; // 0 = right, 1 = up, 2 = left, 3 = down
+        int limit = 1; // Amount to print before changing direction
+        int counter = 0; // How many printed in the current directio
+        int turns = 0; // Counter for turns taken, every second; limit++
 
-                //  Skip if Prime number
-                if(isPrime(curr)) {
-                    ;
-                }
-                //  Add if Composite number
-                else {
-                    to_num[{x,y}] = curr;
-                    to_coord[curr] = {x,y};
-                }
-
-                curr++;
+        for (int i = 1; i < 10000; i++) {
+            //  Skip if Prime number
+            if(isPrime(i)) {
+                ;
             }
-            if(i % 2 == 1) {
-                steps++;
+            //  Add if Composite number
+            else {
+                to_num[{x,y}] = i;
+                to_coord[i] = {x,y};
+            }
+
+            switch(dir) {
+                case 0: y++; break;
+                case 1: x--; break;
+                case 2: y--; break;
+                case 3: x++; break;
+            }
+            
+            counter++;
+
+            if (counter >= limit) {
+                counter = 0;
+                turns = (turns + 1) % 2;
+                dir = (dir + 1) % 4;
+                
+                if (turns == 0) {
+                    limit++;
+                }
             }
         }
     }
 
-    
-    for(int i = -9; i <= 9; i++) 
+    /*
+    for(int i = -12; i <= 12; i++) 
     {
-        for(int j = -9; j <= 9; j++) {
+        for(int j = -12; j <= 12; j++) {
            if (to_num.count({i,j}) ) {
                 cout << to_num[{i,j}] << "\t";
            }
@@ -83,21 +91,28 @@ int main() {
         }
         cout << endl;
     }
-    
+    */
 
     int _case = 1;
     int src, dest;
     while(cin >> src >> dest) {
         cout << "Case " << _case++ << ": ";
-
+        
         map<pair<int,int>, int> bfs_map;
         queue<pair<int,int> > bfs_q;
+
+        
         bfs_q.push(to_coord[src]);
 
         //
         // Breadth First Search (BFS)
         //
         while(!bfs_q.empty()) {
+            // Skip if src || dest not reachable
+            if (isPrime(src) || isPrime(dest)) { 
+                break;
+            } 
+
             auto curr = bfs_q.front();
             bfs_q.pop();
 
@@ -122,10 +137,12 @@ int main() {
 
 
         // If dest is not inside map then no path available
-        if(!bfs_map.count(to_coord[dest])) {
+        if(!bfs_map.count(to_coord[dest]) || src == dest) {
             cout << "impossible" << endl;
         } else {
             cout << bfs_map[to_coord[dest]] << endl;
         }
-    }
+        }
+
+    return 0;
 }
