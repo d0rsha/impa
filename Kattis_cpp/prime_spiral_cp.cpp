@@ -132,6 +132,10 @@ int main() {
                 }
                 bfs_map[next] = bfs_map[curr] + 1;
                 bfs_q.push(next);
+
+                if (to_num[next] == src) {
+                    break;
+                }
             }
         }
 
