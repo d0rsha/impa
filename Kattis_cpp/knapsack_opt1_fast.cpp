@@ -3,13 +3,15 @@
 #include <fstream>
 #include <vector>
 
-//#define DEBUG_BUILD DEBUG_BUILD_DEFINED 
-
 using namespace std;
 
-int matrix[2000][2000];
-int cost[2000]; 
-int weight[2000];
+#define MAX 2002
+//#define DEBUG_BUILD DEBUG_BUILD_DEFINED
+
+
+int matrix[MAX][MAX];
+int cost[MAX]; 
+int weight[MAX];
 
 vector<int> calc_knapsack_without_repitions (int W, int n) 
 { 
@@ -25,10 +27,9 @@ vector<int> calc_knapsack_without_repitions (int W, int n)
 			{ // Start case
 				matrix[i][w] = 0; 
 			}
-			else if (weight[(i-1)] <= w) 
-			{ // Check if worth to add new item OR keep current sack 
-				matrix[i][w] = max(cost[i - 1] + matrix[i - 1][w-weight[i - 1]], 
-									matrix[i - 1][w]); 
+			else if (weight[(i-1)] <= w && cost[i - 1] + matrix[i - 1][w-weight[i - 1]] > matrix[i - 1][w]) 
+			{ 	// Add item
+				matrix[i][w] = cost[i - 1] + matrix[i - 1][w-weight[i - 1]];
 			}	
 			else
 			{	// Do not add item 
@@ -41,17 +42,7 @@ vector<int> calc_knapsack_without_repitions (int W, int n)
 	int sack_value = matrix[n][W];
 	vector<int> v;
 
-#ifdef DEBUG_BUILD
-	for (i = 0; i <= n; i++)
-	{
-		for (w = 0; w <= W; w++)
-		{
-				cout << matrix[i][w] << " ";
-		}
-		cout << endl;
-	}
-	cout << "Result: " << sack_value << endl;
-#endif
+
 
 	w = W; 
 	for (i = n; i > 0 && sack_value > 0; i--) { 
@@ -76,10 +67,12 @@ int main()
 { 
 	int W; 
 	int n; 
+
 #ifdef DEBUG_BUILD
-	ifstream fin("knapsack.txt");
-	#define cin fin
+       ifstream fin("knapsack.txt");
+       #define cin fin
 #endif
+
  	while (cin >> W >> n)
     {
         for (int i = 0; i < n; i++)
