@@ -6,6 +6,16 @@ const rl = readline.createInterface({
   output: process.stdout
 })
 
+function Create2DArray(rows) {
+    var arr = [];
+  
+    for (var i=0;i<rows;i++) {
+       arr[i] = [];
+    }
+  
+    return arr;
+}
+
 // Creed GeekForGeeks 
 function isPrime(n) 
 { 
@@ -20,18 +30,24 @@ function isPrime(n)
 	return true; 
 } 
 
+function int(arr)
+{
+    return Number(arr[1]) * 100 + Number(arr[0]);
+}
+
+
 //function ulams_spine()
 //{
-    let x = 0;
-    let y = 0;
+    let x = 50;
+    let y = 50;
     let dx = [-1,0,0,1];
     let dy = [0,-1,1,0];
 
-    let to_num = [];
+    let to_num = Create2DArray(100);
     let to_coord = []; 
 
-    to_num[{x,y}] = 1;
-    to_coord[1] = {x,y};
+    to_num[x][y] = 1;
+    to_coord[1] = [x,y];
 
     let dir = 0; // 0 = right, 1 = up, 2 = left, 3 = down
     let limit = 1; // Amount to prlet before changing direction
@@ -45,8 +61,8 @@ function isPrime(n)
         }
         //  Add if Composite number
         else {
-            to_num[{x,y}] = i;
-            to_coord[i] = {x,y};
+            to_num[x][y] = i;
+            to_coord[i] = [x,y];
         }
 
         switch(dir) {
@@ -71,12 +87,12 @@ function isPrime(n)
 //    return [to_num, to_cord];
 //}
 
-for(let i = -12; i <= 12; i++) 
+for(let i = 45; i <= 55; i++) 
     {
         let row = "";
-        for(let j = -12; j <= 12; j++) {
-           if (to_num[{i,j}] ) {
-               row += to_num[{i,j}] + "\t";
+        for(let j = 45; j <= 55; j++) {
+           if (to_num[i][j] != undefined) {
+               row += to_num[i][j] + "\t";
            }
            else {
                row += " X " + "\t";
@@ -96,44 +112,56 @@ rl.on('line', (line) => {
         src = Number(line);
     } else {
         dest = Number(line);
-        bfs_map;
-        bfs_q;
+        let bfs_map = {};
+        let bfs_q = [];
 
         
         bfs_q.push(to_coord[src]);
+        bfs_map[(to_coord[src])] = 0;
 
         //
         // Breadth First Search (BFS)
         //
-        while(!bfs_q.empty()) {
-            // Skip if src || dest not reachable
+        while(bfs_q.length > 0) {
+            // Skip if src || dest not reachable (TODO: Should not be in for loop!)
             if (isPrime(src) || isPrime(dest)) { 
+                console.log("Not prime");
                 break;
-            } 
+            }  
 
-            let curr = bfs_q.shift();
+            // console.log("Queue: ", bfs_q);
             
+            const curr = bfs_q.shift();
 
             for(let i = 0; i < 4; i++) {
-                let next = curr;
-                
-                next.first += dx[i];
-                next.second += dy[i];
+                // console.log("Map: ", bfs_map)
+                // let next = curr;
+                const nextx = curr[0] + Number(dx[i]);
+                const nexty = curr[1] + Number(dy[i]);
+                // const nextx = curr[0];
+                // const nexty = curr[1];
+
+                //next[0] += Number(dx[i]);
+                //next[1] += Number(dy[i]);
 
                 // Check if path is possible 
-                if(!to_num.count(next)) {
+                if(to_num[nextx][nexty] === undefined) {
                     continue;
                 }
                 // Check if there already exists shorter path to coordinate
-                else if(bfs_map.next)) {
+                else if(bfs_map[([nextx,nexty])] !== undefined) {
                     continue;
                 }
-                bfs_map[next] = bfs_map[curr] + 1;
-                bfs_q.push(next);
+                bfs_map[([nextx,nexty])] = Number(bfs_map[(curr)]) + 1; // Does not work
+                bfs_q.push([nextx,nexty]);
+
+                if (nextx > 100 || nexty > 100) {
+                    console.error("Out of bounds");
+                }
             }
         }
         // If dest is not inside map then no path available
-        if(!bfs_map.count(to_coord[dest]) || src == dest) {
+        if(!bfs_map[to_coord[dest]] || src == dest) {
             console.log("Case ", _case, ": impossible");
         } else {
             console.log("Case ", _case, ": ", bfs_map[to_coord[dest]]);
