@@ -1,0 +1,12 @@
+{
+  "name": "kattis_js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "jumbled_compass.",
+  "scripts": {
+    "debug": "node jumbled_compass.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
