@@ -24,7 +24,7 @@ Number.prototype.mod = function(i) {
     return ((this % i) + i) % i;
 } 
 
-function solve_algebraic(dx_, dy_)
+function solve_algebraic(dx_, dy_, dsx, dsy)
 {
     let dx = Math.max(dx_, dy_);
     let dy = Math.min(dx_, dy_);
@@ -41,7 +41,7 @@ function solve_algebraic(dx_, dy_)
     if (dsx > nx * 2 && dsy > ny * 1) {
         return nx + ny + knight_jumps_left(dx, dy, false);
     } else {
-        return nx + ny + 2 + knight_jumps_left(dx, dy, false);
+        return nx + ny + knight_jumps_left(dx, dy, true);
     }
 
 }
@@ -54,14 +54,14 @@ function solve(src_x, src_y, dest_x, dest_y, size_x, size_y)
         src_x == 0 && src_y == 0 && dest_x == 1 && dest_y == 1 ||
         src_x == 1 && src_y == 1 && dest_x == 0 && dest_y == 0 ||
         // Upper right corner
-        src_x == size_x && src_y == size_y && dest_x == size_x -1 && dest_y == size_y -1 ||
-        src_x == size_x -1 && src_y == size_y -1 && dest_x == size_x && dest_y == size_y ||
+        src_x == size_x -1 && src_y == size_y -1 && dest_x == size_x -2 && dest_y == size_y -2 ||
+        src_x == size_x -2 && src_y == size_y -2 && dest_x == size_x -1 && dest_y == size_y -1 ||
         // Lower right corner
-        src_x == size_x && src_y == 0 && dest_x == size_x -1 && dest_y == 1 ||
-        src_x == size_x -1 && src_y == 1 && dest_x == size_x && dest_y == 0 ||
+        src_x == size_x -1 && src_y == 0 && dest_x == size_x -2 && dest_y == 1 ||
+        src_x == size_x -2 && src_y == 1 && dest_x == size_x -1 && dest_y == 0 ||
         // Upper left corner
-        src_x == 0 && src_y == size_y && dest_x == 1 && dest_y == size_y -1 ||
-        src_x == 1 && src_y == size_y -1 && dest_x == 0 && dest_y == size_y
+        src_x == 0 && src_y == size_y -1 && dest_x == 1 && dest_y == size_y -2 ||
+        src_x == 1 && src_y == size_y -2 && dest_x == 0 && dest_y == size_y -1
         ) 
         {
             return 4;
@@ -102,6 +102,7 @@ rl.on('line', (line) => {
 
         result = solve(x1, y1, x2, y2, size_x, size_y);
 
+        console.log(result);
         rl.close();
     }
 });
