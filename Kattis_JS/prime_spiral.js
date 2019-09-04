@@ -18,7 +18,6 @@ function Create2DArray(rows) {
     return arr;
 }
 
-// Creed GeekForGeeks 
 function isPrime(n) 
 { 
 	// Corner case 
@@ -38,8 +37,7 @@ function int(arr)
 }
 
 
-//function ulams_spine()
-//{
+//function construct_ulams_spine() {
     let x = OFFSET;
     let y = OFFSET;
     let dx = [-1,0,0,1];
@@ -86,15 +84,15 @@ function int(arr)
             }
         }
     }
-//    return [to_num, to_cord];
-//}
+
+
 
 for(let i = -5; i <= +5; i++) 
     {
         let row = "";
         for(let j = -5; j <= 5; j++) {
            if (to_num[i+OFFSET][j+OFFSET] != undefined) {
-               row += to_num[i+OFFSET][j+OFFSET] + "\t";
+               row += to_coord[to_num[i+OFFSET][j+OFFSET]] + "\t";
            }
            else {
                row += " X " + "\t";
@@ -117,36 +115,29 @@ rl.on('line', (line) => {
         let bfs_map = {};
         let bfs_q = [];
 
-        
-        bfs_q.push(to_coord[src]);
-        bfs_map[(to_coord[src])] = 0;
+        // Skip if src || dest not reachable
+        console.log("src:",src," ",isPrime(src), " dest:",dest," ", isPrime(dest))
+        if (isPrime(src) || isPrime(dest)) { 
+            console.log("Not prime");
+            bfs_q = [];
+        } else {
+            bfs_q.push([to_coord[src][0], to_coord[src][1]]);
+            bfs_map[(to_coord[src])] = 0;
+        } 
 
+        let run = true;
         //
         // Breadth First Search (BFS)
         //
-        while(bfs_q.length > 0) {
-            // Skip if src || dest not reachable (TODO: Should not be in for loop!)
-            if (isPrime(src) || isPrime(dest)) { 
-                console.log("Not prime");
-                break;
-            }  
-
-            // console.log("Queue Size: ", bfs_q.length);
+        while(bfs_q.length > 0 && run) {
+            // console.log("Queue: ", bfs_q);
             // console.log("Map: ", bfs_map)
             const curr = bfs_q.shift();
 
             for(let i = 0; i < 4; i++) {
-                
-                // let next = curr;
                 const nextx = curr[0] + Number(dx[i]);
                 const nexty = curr[1] + Number(dy[i]);
-                // const nextx = curr[0];
-                // const nexty = curr[1];
 
-                //next[0] += Number(dx[i]);
-                //next[1] += Number(dy[i]);
-
-                // Check if path is possible 
                 if(to_num[nextx][nexty] === undefined) {
                     continue;
                 }
@@ -161,27 +152,35 @@ rl.on('line', (line) => {
                     console.error("Out of bounds");
                 }
                 else if (to_num[nextx][nexty] === dest) {
-                    console.log("Found exit from ", src, " to ", to_num[nextx][nexty]);
-                    bfs_q = [];
+                    run = false;
                 }
             }
         }
 
-        console.log("to_coord[dest]", to_coord[dest]);
-        console.log("bfs_map[coord]", bfs_map[to_coord[dest]]);
+        
+        if (to_coord[dest] !== undefined) {
+            console.log("Not undefined");
+            console.log("to_coord[dest]", to_coord[dest]);
+            console.log("bfs_map[to_coord[dest]]", bfs_map[to_coord[dest]]);
 
-
-        // If dest is not inside map then no path available
-        if(!bfs_map[to_coord[dest]] || src == dest) {
-            console.log("Case ", _case++, ": impossible");
-        } else {
-            console.log("Case ", _case++, ": ", bfs_map[to_coord[dest]]);
+            // If dest is not inside map then no path available
+            if(bfs_map[to_coord[dest]] === undefined || src == dest) {
+                console.log("Case ", _case++, ": impossible");
+            } else {
+                console.log("Case ", _case++, ": ", bfs_map[to_coord[dest]]);
+            }
+        }
+        else {
+            console.log("Undefined");
         }
 
-        reads = 0;
+        
+
+        reads = 0;  
     }
 
     
 });
 
 
+// Check to_num[var] array
