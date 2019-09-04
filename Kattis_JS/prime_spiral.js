@@ -1,3 +1,6 @@
+const OFFSET = 50
+const ROOF   = 10000
+
 const readline = require('readline')
 
 const rl = readline.createInterface({
@@ -8,7 +11,6 @@ const rl = readline.createInterface({
 
 function Create2DArray(rows) {
     var arr = [];
-  
     for (var i=0;i<rows;i++) {
        arr[i] = [];
     }
@@ -38,8 +40,8 @@ function int(arr)
 
 //function ulams_spine()
 //{
-    let x = 50;
-    let y = 50;
+    let x = OFFSET;
+    let y = OFFSET;
     let dx = [-1,0,0,1];
     let dy = [0,-1,1,0];
 
@@ -54,7 +56,7 @@ function int(arr)
     let counter = 0; // How many printed in the current directio
     let turns = 0; // Counter for turns taken, every second; limit++
 
-    for (let i = 1; i < 10000; i++) {
+    for (let i = 1; i < ROOF; i++) {
         //  Skip if Prime number
         if(isPrime(i)) {
             ;
@@ -87,12 +89,12 @@ function int(arr)
 //    return [to_num, to_cord];
 //}
 
-for(let i = 45; i <= 55; i++) 
+for(let i = -5; i <= +5; i++) 
     {
         let row = "";
-        for(let j = 45; j <= 55; j++) {
-           if (to_num[i][j] != undefined) {
-               row += to_num[i][j] + "\t";
+        for(let j = -5; j <= 5; j++) {
+           if (to_num[i+OFFSET][j+OFFSET] != undefined) {
+               row += to_num[i+OFFSET][j+OFFSET] + "\t";
            }
            else {
                row += " X " + "\t";
@@ -129,12 +131,12 @@ rl.on('line', (line) => {
                 break;
             }  
 
-            // console.log("Queue: ", bfs_q);
-            
+            // console.log("Queue Size: ", bfs_q.length);
+            // console.log("Map: ", bfs_map)
             const curr = bfs_q.shift();
 
             for(let i = 0; i < 4; i++) {
-                // console.log("Map: ", bfs_map)
+                
                 // let next = curr;
                 const nextx = curr[0] + Number(dx[i]);
                 const nexty = curr[1] + Number(dy[i]);
@@ -152,19 +154,28 @@ rl.on('line', (line) => {
                 else if(bfs_map[([nextx,nexty])] !== undefined) {
                     continue;
                 }
-                bfs_map[([nextx,nexty])] = Number(bfs_map[(curr)]) + 1; // Does not work
+                bfs_map[([nextx,nexty])] = Number(bfs_map[(curr)]) + 1; 
                 bfs_q.push([nextx,nexty]);
 
                 if (nextx > 100 || nexty > 100) {
                     console.error("Out of bounds");
                 }
+                else if (to_num[nextx][nexty] === dest) {
+                    console.log("Found exit from ", src, " to ", to_num[nextx][nexty]);
+                    bfs_q = [];
+                }
             }
         }
+
+        console.log("to_coord[dest]", to_coord[dest]);
+        console.log("bfs_map[coord]", bfs_map[to_coord[dest]]);
+
+
         // If dest is not inside map then no path available
         if(!bfs_map[to_coord[dest]] || src == dest) {
-            console.log("Case ", _case, ": impossible");
+            console.log("Case ", _case++, ": impossible");
         } else {
-            console.log("Case ", _case, ": ", bfs_map[to_coord[dest]]);
+            console.log("Case ", _case++, ": ", bfs_map[to_coord[dest]]);
         }
 
         reads = 0;
