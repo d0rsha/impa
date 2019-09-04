@@ -85,8 +85,7 @@ function int(arr)
         }
     }
 
-
-
+/*
 for(let i = -5; i <= +5; i++) 
     {
         let row = "";
@@ -100,7 +99,7 @@ for(let i = -5; i <= +5; i++)
         }
         console.log(row);
     }
-
+*/
 
 let _case = 1;
 let src, dest;
@@ -114,18 +113,17 @@ rl.on('line', (line) => {
         dest = Number(line);
         let bfs_map = {};
         let bfs_q = [];
+        let run = true;
+
 
         // Skip if src || dest not reachable
-        console.log("src:",src," ",isPrime(src), " dest:",dest," ", isPrime(dest))
-        if (isPrime(src) || isPrime(dest)) { 
-            console.log("Not prime");
-            bfs_q = [];
+        if ((src == dest) || (isPrime(src) || isPrime(dest))) { 
+            run = false;
         } else {
             bfs_q.push([to_coord[src][0], to_coord[src][1]]);
             bfs_map[(to_coord[src])] = 0;
         } 
 
-        let run = true;
         //
         // Breadth First Search (BFS)
         //
@@ -138,6 +136,7 @@ rl.on('line', (line) => {
                 const nextx = curr[0] + Number(dx[i]);
                 const nexty = curr[1] + Number(dy[i]);
 
+                // Check if path is possible 
                 if(to_num[nextx][nexty] === undefined) {
                     continue;
                 }
@@ -148,30 +147,21 @@ rl.on('line', (line) => {
                 bfs_map[([nextx,nexty])] = Number(bfs_map[(curr)]) + 1; 
                 bfs_q.push([nextx,nexty]);
 
-                if (nextx > 100 || nexty > 100) {
-                    console.error("Out of bounds");
-                }
-                else if (to_num[nextx][nexty] === dest) {
+                // With BFS the first occourance must also be shortest 
+                if (to_num[nextx][nexty] === dest) {
                     run = false;
                 }
             }
         }
 
         
-        if (to_coord[dest] !== undefined) {
-            console.log("Not undefined");
-            console.log("to_coord[dest]", to_coord[dest]);
-            console.log("bfs_map[to_coord[dest]]", bfs_map[to_coord[dest]]);
-
-            // If dest is not inside map then no path available
-            if(bfs_map[to_coord[dest]] === undefined || src == dest) {
-                console.log("Case ", _case++, ": impossible");
-            } else {
-                console.log("Case ", _case++, ": ", bfs_map[to_coord[dest]]);
-            }
-        }
-        else {
-            console.log("Undefined");
+        // If dest is not inside map then no path available
+        if ( src == dest ||  (isPrime(src) || isPrime(dest))) {
+            console.log("Case ", _case++, ": impossible");
+        } else if(bfs_map[to_coord[dest]] === undefined) {
+            console.log("Case ", _case++, ": impossible");
+        } else {
+            console.log("Case ", _case++, ": ", bfs_map[to_coord[dest]]);
         }
 
         
@@ -181,6 +171,3 @@ rl.on('line', (line) => {
 
     
 });
-
-
-// Check to_num[var] array
