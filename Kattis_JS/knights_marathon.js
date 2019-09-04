@@ -165,10 +165,10 @@ rl.on('line', (line) => {
     else if (cnt == 3) {
         x2 = Number(line.split(" ")[0]); y2 = Number(line.split(" ")[1]);
 
-        if (!true) {
-            console.log(solve_algebraic(x1, y1, x2, y2, size_x, size_y));
-        } else {
+        if (size_x < 500 && size_y < 500) {
             console.log(bfs_minmum_jumps(x1, y1, x2, y2, size_x, size_y));
+        } else {
+            console.log(solve_algebraic(x1, y1, x2, y2, size_x, size_y));
         }
 
         rl.close();
