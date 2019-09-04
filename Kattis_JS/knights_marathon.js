@@ -1,3 +1,8 @@
+
+//
+// Algebraic solution O(1) time
+//
+
 /*
  * Five by five matrix for remaining jumps 
 */
@@ -24,7 +29,7 @@ Number.prototype.mod = function(i) {
     return ((this % i) + i) % i;
 } 
 
-function solve_algebraic(dx_, dy_, dsx, dsy)
+function solve_algebraic_helper(dx_, dy_, dsx, dsy)
 {
     let dx = Math.max(dx_, dy_);
     let dy = Math.min(dx_, dy_);
@@ -46,7 +51,7 @@ function solve_algebraic(dx_, dy_, dsx, dsy)
 
 }
     
-function solve(src_x, src_y, dest_x, dest_y, size_x, size_y)
+function solve_algebraic(src_x, src_y, dest_x, dest_y, size_x, size_y)
 {
     // Corner cases
     if (
@@ -73,9 +78,69 @@ function solve(src_x, src_y, dest_x, dest_y, size_x, size_y)
     let dsx = Math.abs(src_x - size_x);
     let dsy = Math.abs(src_y - size_y);
 
-    return solve_algebraic(deltax, deltay, dsx, dsy);
+    return solve_algebraic_helper(deltax, deltay, dsx, dsy);
 }	
 
+
+
+//
+// Numeric solution with BFS, O(N_x * N_y)
+//
+
+function withinBounds( x, y, size_x, size_y) 
+{ 
+    if (x >= 0 && x <= (size_x -1) && y >= 0 && y <= (size_y -1))
+        return true; 
+    return false; 
+} 
+
+function bfs_minmum_jumps(src_x, src_y, dest_x, dest_y, size_x, size_y)
+{
+    if (src_x === dest_x && src_y === dest_y) {
+        return 0;
+    }
+
+    // The 8 possible moves of a knight 
+    const dx = [-2, -1,  1,  2, -2, -1, 1, 2]; 
+    const dy = [-1, -2, -2, -1,  1,  2, 2, 1]; 
+
+    let q = [];
+    let map = {};
+
+    q.push([src_x, src_y]);
+    map[[src_x, src_y]] = 0;
+
+    let x = 0;
+    let y = 0;
+    let searching = true;
+
+    // loop untill we have one element in queue 
+    while ( q.length > 0 )
+    { 
+        let coord = q.shift();
+
+        // loop for all reachable states 
+        for (let i = 0; i < dx.length; i++) 
+        { 
+            x = coord[0] + dx[i]; 
+            y = coord[1] + dy[i]; 
+  
+            // If reachable state is not yet visited and 
+            // inside board, push that state into queue 
+            if (!withinBounds(x, y, size_x, size_y) || map[[x, y]] !== undefined) {
+                continue;
+            } else {
+                q.push([x, y]);
+                map[[x, y]] = map[coord] + 1;
+
+                if ( x === dest_x && y === dest_y) {
+                    return map[[x, y]];
+                }
+            } 
+        } 
+    }
+    return "impossible";
+}
 
 const readline = require('readline')
 
@@ -100,9 +165,12 @@ rl.on('line', (line) => {
     else if (cnt == 3) {
         x2 = Number(line.split(" ")[0]); y2 = Number(line.split(" ")[1]);
 
-        result = solve(x1, y1, x2, y2, size_x, size_y);
+        if (!true) {
+            console.log(solve_algebraic(x1, y1, x2, y2, size_x, size_y));
+        } else {
+            console.log(bfs_minmum_jumps(x1, y1, x2, y2, size_x, size_y));
+        }
 
-        console.log(result);
         rl.close();
     }
 });
