@@ -38,7 +38,12 @@ function solve_algebraic(dx_, dy_)
     dx = dx - ( 2 * nx ) - ny;
     dy = (dy - ( 2 * ny ) - nx).mod(2);
     
-    return nx + ny + knight_jumps_left(dx, dy, false);
+    if (dsx > nx * 2 && dsy > ny * 1) {
+        return nx + ny + knight_jumps_left(dx, dy, false);
+    } else {
+        return nx + ny + 2 + knight_jumps_left(dx, dy, false);
+    }
+
 }
     
 function solve(src_x, src_y, dest_x, dest_y, size_x, size_y)
@@ -64,8 +69,11 @@ function solve(src_x, src_y, dest_x, dest_y, size_x, size_y)
 
     let deltax = Math.abs(src_x - dest_x);
     let deltay = Math.abs(src_y - dest_y);
+    
+    let dsx = Math.abs(src_x - size_x);
+    let dsy = Math.abs(src_y - size_y);
 
-    return solve_algebraic(deltax, deltay);
+    return solve_algebraic(deltax, deltay, dsx, dsy);
 }	
 
 
@@ -92,7 +100,7 @@ rl.on('line', (line) => {
     else if (cnt == 3) {
         x2 = Number(line.split(" ")[0]); y2 = Number(line.split(" ")[1]);
 
-        console.log(solve(x1, y1, x2, y2, size_x, size_y));
+        result = solve(x1, y1, x2, y2, size_x, size_y);
 
         rl.close();
     }
