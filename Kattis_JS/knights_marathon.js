@@ -48,7 +48,6 @@ function solve_algebraic_helper(dx_, dy_, dsx, dsy)
     } else {
         return nx + ny + knight_jumps_left(dx, dy, true);
     }
-
 }
     
 function solve_algebraic(src_x, src_y, dest_x, dest_y, size_x, size_y)
@@ -80,7 +79,6 @@ function solve_algebraic(src_x, src_y, dest_x, dest_y, size_x, size_y)
 
     return solve_algebraic_helper(deltax, deltay, dsx, dsy);
 }	
-
 
 
 //
@@ -139,7 +137,7 @@ function bfs_minmum_jumps(src_x, src_y, dest_x, dest_y, size_x, size_y)
             } 
         } 
     }
-    return "impossible";
+    return Infinity;
 }
 
 const readline = require('readline')
@@ -165,10 +163,52 @@ rl.on('line', (line) => {
     else if (cnt == 3) {
         x2 = Number(line.split(" ")[0]); y2 = Number(line.split(" ")[1]);
 
-        if (size_x < 500 && size_y < 500) {
+        // Choose BFS 
+        if (size_x < 10 && size_y < 10) {
             console.log(bfs_minmum_jumps(x1, y1, x2, y2, size_x, size_y));
-        } else {
-            console.log(solve_algebraic(x1, y1, x2, y2, size_x, size_y));
+        } 
+        // Choose Math forumla
+        else {
+            if (x1 == x2 && y1 == y2) {
+                console.log(0);
+                return;
+            }
+
+            // Problem when destination is corner case.
+            // Solution: Move dest 1 step in each dir,
+            //           solve for each case, pick optimal case
+
+            const end = [x2, y2];
+            let x;
+            let y;
+            let coord;
+            // The 8 possible moves of a knight 
+            const dx = [-2, -1,  1,  2, -2, -1, 1, 2]; 
+            const dy = [-1, -2, -2, -1,  1,  2, 2, 1]; 
+            
+            let q = [];
+                // loop for all reachable states 
+            for (let i = 0; i < dx.length; i++) { 
+                x = end[0] + dx[i]; 
+                y = end[1] + dy[i]; 
+
+                if (withinBounds(x,y,size_x,size_y)) {
+                    q.push(solve_algebraic(x1, y1, x, y, size_x, size_y) + 1)
+                }
+            }
+
+            //console.log(q);
+
+            let best = q.shift();
+            for (let i=0; i < q.length; ) {
+                let cand = q.shift();
+                
+                if (cand < best) {
+                    best = cand;
+                }
+            }
+            console.log(best);
+
         }
 
         rl.close();
