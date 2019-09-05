@@ -37,69 +37,53 @@ function int(arr)
 }
 
 
-//function construct_ulams_spine() {
-    let x = OFFSET;
-    let y = OFFSET;
-    let dx = [-1,0,0,1];
-    let dy = [0,-1,1,0];
+// construct_ulams_spine() {
+let x = OFFSET;
+let y = OFFSET;
+let dx = [-1,0,0,1];
+let dy = [0,-1,1,0];
 
-    let to_num = Create2DArray(100);
-    let to_coord = []; 
+let to_num = Create2DArray(100);
+let to_coord = []; 
 
-    to_num[x][y] = 1;
-    to_coord[1] = [x,y];
+to_num[x][y] = 1;
+to_coord[1] = [x,y];
 
-    let dir = 0; // 0 = right, 1 = up, 2 = left, 3 = down
-    let limit = 1; // Amount to prlet before changing direction
-    let counter = 0; // How many printed in the current directio
-    let turns = 0; // Counter for turns taken, every second; limit++
+let dir = 0;        // 0 = right, 1 = up, 2 = left, 3 = down
+let limit = 1;      // Amount to prlet before changing direction
+let counter = 0;    // How many printed in the current directio
+let turns = 0;      // Counter for turns taken, every second; limit++
 
-    for (let i = 1; i < ROOF; i++) {
-        //  Skip if Prime number
-        if(isPrime(i)) {
-            ;
-        }
-        //  Add if Composite number
-        else {
-            to_num[x][y] = i;
-            to_coord[i] = [x,y];
-        }
+for (let i = 1; i < ROOF; i++) {
+    //  Skip if Prime number
+    if(isPrime(i)) {
+        ;
+    }
+    //  Add if Composite number
+    else {
+        to_num[x][y] = i;
+        to_coord[i] = [x,y];
+    }
 
-        switch(dir) {
-            case 0: y++; break;
-            case 1: x--; break;
-            case 2: y--; break;
-            case 3: x++; break;
-        }
+    switch(dir) {
+        case 0: y++; break;
+        case 1: x--; break;
+        case 2: y--; break;
+        case 3: x++; break;
+    }
+    
+    counter++;
+
+    if (counter >= limit) {
+        counter = 0;
+        turns = (turns + 1) % 2;
+        dir = (dir + 1) % 4;
         
-        counter++;
-
-        if (counter >= limit) {
-            counter = 0;
-            turns = (turns + 1) % 2;
-            dir = (dir + 1) % 4;
-            
-            if (turns == 0) {
-                limit++;
-            }
+        if (turns == 0) {
+            limit++;
         }
     }
-
-/*
-for(let i = -5; i <= 5; i++) 
-    {
-        let row = "";
-        for(let j = -5; j <= 5; j++) {
-           if (to_num[i+OFFSET][j+OFFSET] != undefined) {
-               row += to_num[i+OFFSET][j+OFFSET] + "\t";
-           }
-           else {
-               row += " X " + "\t";
-           }
-        }
-        console.log(row);
-    }
-*/
+}
 
 let _case = 1;
 let src, dest;
@@ -125,8 +109,6 @@ rl.on('line', (line) => {
     // Breadth First Search (BFS)
     //
     while(bfs_q.length > 0 && run) {
-        // console.log("Queue: ", bfs_q);
-        // console.log("Map: ", bfs_map)
         const curr = bfs_q.shift();
 
         for(let i = 0; i < 4; i++) {

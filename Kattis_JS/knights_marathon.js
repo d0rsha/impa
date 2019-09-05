@@ -15,18 +15,18 @@ let x1, y1, x2, y2;
 // Algebraic solution O(1) time
 //
 
-function knight_jumps_left(dx_, dy_, first_move) 
+function knight_jumps_left(dx_, dy_, close_to_border) 
 {
     let dx = Math.max(dx_, dy_);
     let dy = Math.min(dx_, dy_);
 
     switch(dx.toString() + "," + dy.toString()) {
         case "0,0": return 0; 
-        case "1,0": return (first_move) ? 3 : 1;
+        case "1,0": return (close_to_border) ? 3 : 1;
         case "1,1": return 2;
         case "2,0": return 2;  
         case "2,1": return 1;
-        case "2,2": return (first_move) ? 4 : 2;
+        case "2,2": return (close_to_border) ? 4 : 2;
         default: console.error("Wopsi");
     }
 }
@@ -53,7 +53,7 @@ function solve_algebraic_helper(dx_, dy_, dsx, dsy)
     dx = dx - ( 2 * nx ) - ny;
     dy = (dy - ( 2 * ny ) - nx).mod(2);
     
-    // If destionation is just along a border
+    // If destionation is next to border (Did not work... Solved by moving dest-point instead)
     if (dsx > nx * 2 && dsy > ny * 1) {
         return nx + ny + knight_jumps_left(dx, dy, false);
     } else {
@@ -152,11 +152,15 @@ const rl = readline.createInterface({
   output: process.stdout
 })
 
+
+/*
+ *  MAIN function 
+ */ 
 rl.on('line', (line) => {
     if (!line) { rl.close(); return; }
 
     if (cnt++ === 0) { 
-        size_x = line.split(" ")[0]; size_y = line.split(" ")[1];
+        size_x = Number(line.split(" ")[0]); Number(size_y = line.split(" ")[1]);
     }
     else if (cnt == 2) { 
         x1 = Number(line.split(" ")[0]); y1 = Number(line.split(" ")[1]);
@@ -164,7 +168,7 @@ rl.on('line', (line) => {
     else if (cnt == 3) {
         x2 = Number(line.split(" ")[0]); y2 = Number(line.split(" ")[1]);
 
-        // Choose BFS 
+        // Choose BFS if size smaller than 10 
         if (size_x < 10 && size_y < 10) {
             console.log(bfs_minmum_jumps(x1, y1, x2, y2, size_x, size_y));
         } 
