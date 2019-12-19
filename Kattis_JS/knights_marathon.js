@@ -12,7 +12,8 @@ let x1, y1, x2, y2
 //
 // Algebraic solution O(1) time
 //
-function knight_jumps_left(dx_, dy_, first_move) {
+
+function knight_jumps_left(dx_, dy_, close_to_border) {
   let dx = Math.max(dx_, dy_)
   let dy = Math.min(dx_, dy_)
 
@@ -20,7 +21,7 @@ function knight_jumps_left(dx_, dy_, first_move) {
     case "0,0":
       return 0
     case "1,0":
-      return first_move ? 3 : 1
+      return close_to_border ? 3 : 1
     case "1,1":
       return 2
     case "2,0":
@@ -28,7 +29,7 @@ function knight_jumps_left(dx_, dy_, first_move) {
     case "2,1":
       return 1
     case "2,2":
-      return first_move ? 4 : 2
+      return close_to_border ? 4 : 2
     default:
       console.error("Wopsi")
   }
